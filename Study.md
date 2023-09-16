@@ -94,8 +94,12 @@ return (
 1. 우선 리액트 프로젝트를 설치하기 위해서는 리액트 도구를 설치해야 하며, 다음의 명령을 터미널에 입력하게 됩니다.
 - npm install -g create-react-app -> Node.js 패키지 관리자인 npm을 사용하여 전역(Global)으로 앱을 생성하겠다는 뜻.
 - npx create-react-app projectname --template=typescript -> Node.js 패키지 관리 도구인 npx를 사용해
-(npm은 프로젝트 간의 종속성 및 모듈 업데이트의 일관성으로 인해 권장되지 않으며 최근에는 프로젝트 마다의 영향을 배제하면서 최신 리액트 버전 유지가 가능한 npx 명령 사용이 권장 된다고 합니다.)
-특정 이름의 앱을 만드는데 프로젝트의 템플릿을 타입스크립트로 지정하겠다는 뜻.
+  특정 이름의 앱을 만드는데 프로젝트의 템플릿을 타입스크립트로 지정하겠다는 뜻.
+  (npm은 프로젝트 간의 종속성 및 모듈 업데이트의 일관성으로 인해 권장되지 않으며 최근에는 프로젝트 마다의 영향을 배제하면서 최신 리액트 버전 유지가 가능한 npx 명령 사용이 권장 된다고 합니다.)
+- 추가로 타입스크립트 적용 없이 npx create-react-app projectname만 입력하여 프로젝트를 생성 하였다면
+  npm install --save-dev typescript @types/node @types/react @types/react-dom 명령어 입력을 통해
+  개발 의존성을 추가한 후 노드, 리액트, 리액트 돔 타입 정의 및 해당 기능들에 접근시 필요한 타입스크립트 타입 정보를 제공합니다.
+  물론 이렇게 기존 리액트 프로젝트에 추가로 타입스크립트를 적용하게 될경우 js 확장자를 tsx 확장자로 일일이 바꾸어 주어야 하거나, src 폴더 안에 custom.d.ts를 추가하여 추가로 자바스크립트 파일을 타입스크립트 파일로 변경해야 하고, 마찬가지로 reportWebvitals.ts 내부 구조를 수정해야 하는 번거로움이 있기에 프로젝트 생성시에는 타입스크립트를 적용 하는 명령어를 적용하는 것이 편합니다.
 2. 이후 해당 리액트 프로젝트가 생성 되었다면 npx create-react-app 명령 입력을 통해 버전 확인이 가능합니다. 
 3. 버전까지 확인 후 npx create-react-app appname을 통해 리액트의 프로젝트를 생성합니다.
 4. 프로젝트가 생성 되었다면 cd appname을 입력하여 해당 파일로 이동한 후 npm start를 통해 리액트를 실행합니다.
@@ -129,8 +133,70 @@ root.render(
 <!-- -------------------------------------★ 4번 내용----------------------------------------- -->
 
 "Scripts" : {
-  "start" : "react-scripts start",
+  "start" : "react-scripts start", 
+  <!-- 리액트 스크립트 실행을 할 때의 명령어 -->
   "build" : "react-scripts build",
+  <!-- 리액트 스크립트를 빌드 할 때의 명령어 -->
   "test" : "react-scripts test",
+  <!-- 리액트 스크립트를 테스트 할 때의 명령어 -->
   "eject" : "react-scripts eject"
+  <!-- 리액트 스크립트의 내부 설정 및 구조를 드러내고자 할 때의 명령어 -->
 };
+
+<!--9월 16일 공부 : 1-3 나의 첫 리액트 프로젝트  (P58-P) -->
+
+1. 리액트에서 스타일링(CSS)를 사용하기 위해서는 우선 public 파일 안에 CSS파일을 생성한 후 index.html <link /> 태그로 CSS 파일을 추가하는 것으로 해당 스타일링을 리액트 앱에 적용 할 수 있습니다.
+
+<!-- -------------------------------------★ 1번 내용----------------------------------------- -->
+
+<link rel = "stylesheet" href = %PUBLIC_URL%/custom.css />
+<!-- html에 CSS 파일 연결시 link 태그를 사용하며 href 경로에 %PUBLIC_URL% 경로를 입력하여 도구가 경로를 자동으로 해석 할 수 있게 할수 있습니다.(편리하게 지정 가능)-->
+
+2. 링크가 html 파일 내부에 추가 되었다면 실제 컴포넌트 구조는 App.tsx에서 변경해야 합니다.
+
+<!-- -------------------------------------★ 2번 내용----------------------------------------- -->
+
+<!-- CSS 파일 구조 -->
+.App-header{
+  background-color : green !important;
+}
+
+<!-- App.js 파일 구조 -->
+function App(){
+  return (
+    <header className = "App-header">
+     ㆍㆍㆍ
+    <header>
+  );
+};
+
+
+3. 이렇게 각각의 컴포넌트에 CSS 파일을 분리하여 지정하는 것도 가능하지만 이렇게 될 경우 클래스명이 중복되어 의도치 않는 스타일이 적용 됩니다. 이를 해결하기 위해 CSS-in-JS 방법론을 적용하여 컴포넌트에 직접 스타일을 지정 함으로 쉽게 적용 및 관리가 가능해집니다. 
+- 해당 CSS-in-JS 속성이 적용 된 프로젝트를 생성하기 위해 다음 명령어를 입력합니다.
+  ( npm create-react-app my-app-css-in-js --template=typescript) 
+- 해당 프로젝트로 이동 후 이모션을 추가합니다. 이 이모션을 관리하여 컴포넌트에 적용되는 CSS 코드를 대체하게 됩니다.
+  ( npm install --save @emotion/react @emotion/styled )
+- App.tsx 파일을 열은 후 해당 코드를 임포트 합니다. 이후에는 App.tsx 파일 내부에 있던 App.css를 임포트 할 필요가 없어집니다. 
+  ( import styled from '@emotion/styled'; )
+- 다시 App.tsx 파일 내부에 템플릿 리터럴(백틱)을 활용하여 새로운 컴포넌트를 생성해줍니다.
+
+  const Container = Styled.div`
+    text-align : center;
+  `;
+
+- 이후 해당 스타일을 App.css 파일 안에 똑같이 추가해 줍니다.
+  
+  .App {
+    text-align : center;
+  }
+
+- 다시 돌아와 App.tsx 파일에서 스타일을 적용 시켜줄 부분에 container tag를 생성해 줍니다.
+
+function App(){
+  return (
+    <Container>
+    </Container>
+  );
+};
+
+- 이 작업들을 진행할 경우 스타일이 정상적으로 적용되며 다른 스타일도 적용하게 될 경우 위의 절차대로 이모션을 추가하여 스타일을 적용해주면 됩니다.
